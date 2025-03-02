@@ -1,0 +1,55 @@
+#borderBox {
+    width: 90%;
+    height: 80%;
+    border: 3px solid black;
+    position: relative;
+    margin: 5% auto;
+    overflow: auto;
+}
+
+.inputBox {
+    position: absolute;
+    border: 1px solid grey;
+    background-color: white;
+    padding: 5px;
+}
+
+.deleteButton, .editButton {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 10;
+}
+
+.deleteButton {
+    background-color: red;
+}
+
+.editButton {
+    background-color: green;
+    right: 50px;
+}
+
+.resizer {
+    display: none;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: blue;
+    cursor: se-resize;
+}
+
+.textResizer {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 200px;
+    background: orange;
+    cursor: ew-resize;
+}

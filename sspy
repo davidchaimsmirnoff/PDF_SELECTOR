@@ -1,0 +1,60 @@
+from PyQt6.QtWidgets import QApplication, QTextEdit, QMainWindow
+from PyQt6.QtGui import QTextCursor, QTextOption, QFont
+from PyQt6.QtCore import Qt
+import sys
+import keyboard
+import pyperclip
+import time
+
+class HebrewTextEditor(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        # Set window title and size
+        self.setWindowTitle("Hebrew Text Editor (PyQt)")
+        self.setGeometry(100, 100, 600, 300)
+
+        # Create a QTextEdit widget
+        self.text_edit = QTextEdit(self)
+        self.text_edit.setGeometry(10, 10, 580, 280)
+
+        # Set font for better Hebrew support
+        self.text_edit.setFont(QFont("Arial", 16))
+
+        # Enable Right-to-Left text direction
+        self.text_edit.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+        self.text_edit.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.text_edit.setWordWrapMode(QTextOption.WrapMode.WordWrap)
+
+        # Force the cursor to start on the right
+        cursor = self.text_edit.textCursor()
+        cursor.movePosition(QTextCursor.MoveOperation.Start)
+        self.text_edit.setTextCursor(cursor)
+        self.text_edit.setTextInteractionFlags(Qt.TextInteractionFlag.TextEditorInteraction)
+
+        # Listen for Enter key to copy selected text
+        keyboard.add_hotkey("enter", self.copy_selected_text)
+
+    def copy_selected_text(self):
+        # Simulate Ctrl + C to copy selected text
+        keyboard.press_and_release("ctrl+c")
+        time.sleep(0.2)  # Short delay to ensure clipboard updates
+
+        # Get copied text
+        copied_text = pyperclip.paste().strip()
+
+        if copied_text:
+            # Append new text at the cursor position in proper RTL order
+            cursor = self.text_edit.textCursor()
+            cursor.insertText(copied_text + " ")
+            self.text_edit.setTextCursor(cursor)  # Ensure correct cursor placement
+
+            print(f"Saved: {copied_text}")
+        else:
+            print("No text detected. Try selecting and pressing Enter again.")
+
+# Run the application
+app = QApplication(sys.argv)
+window = HebrewTextEditor()
+window.show()
+sys.exit(app.exec())

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Draggable Text</title>
+<style>
+.draggable {
+position: absolute;
+cursor: move;
+cursor: grab;
+padding: 5px;
+border: 1px solid black;
+        background-color: lightgray;
+overflow: hidden;
+          white-space: nowrap;
+          user-select: text;
+direction: auto;
+           unicode-bidi: bidi-override;
+}
+.draggable:active {
+cursor: grabbing;
+}
+.delete-button, .edit-button {
+position: absolute;
+top: 0;
+     background-color: red;
+color: white;
+border: none;
+padding: 2px;
+width: 16px;
+height: 16px;
+        line-height: 16px;
+        text-align: center;
+cursor: pointer;
+        font-size: 12px;
+        font-family: Arial, sans-serif;
+        border-radius: 2px;
+direction: ltr;
+}
+.delete-button {
+right: 0;
+}
+.edit-button {
+right: 20px;
+       background-color: green;
+}
+.resize-button {
+position: absolute;
+bottom: 0;
+right: 0;
+       background-color: blue;
+color: white;
+border: none;
+width: 16px;
+height: 16px;
+        line-height: 16px;
+        text-align: center;
+cursor: nwse-resize;
+        font-size: 12px;
+        font-family: Arial, sans-serif;
+        border-radius: 2px;
+}
+#slider {
+position: fixed;
+top: 10px;
+left: 50%;
+transform: translateX(-50%);
+width: 200px;
+height: 10px;
+        background-color: #ccc;
+display: none;
+cursor: pointer;
+}
+#slider-thumb {
+position: absolute;
+top: -3px;
+left: 0;
+width: 16px;
+height: 16px;
+        background-color: #333;
+        border-radius: 50%;
+}
+#output {
+position: relative;
+width: 100%;
+       min-height: 800px; /* Increase this */
+border: 1px solid black;
+overflow: auto; /* Allows scrolling if needed */
+}
+/* Styles for the new multi-page controls */
+#pageControls {
+        margin-bottom: 10px;
+}
+#pageControls button, #pageControls span {
+        margin-right: 5px;
+        font-family: sans-serif;
+}
+</style>
+</head>
+<body>
+<!-- New Multi-Page Controls -->
+<div id="pageControls">
+<button id="newPageButton">New Page</button>
+<button id="prevPageButton">Previous Page</button>
+<button id="nextPageButton">Next Page</button>
+<span id="pageIndicator">Page 1</span>
+</div>
+
+<!-- Existing Controls -->
+<button id="clearButton">Clear Canvas</button>
+<button id="undoButton">Undo</button>
+<input id="textInput" type="text" placeholder="Enter text and press Enter" />
+<button id="saveButton">Save State</button>
+<button id="loadButton">Load State</button>
+
+<div id="output" style="position: relative; width: 100%; height: 500px; border: 1px solid black;"></div>
+<div id="slider">
+<div id="slider-thumb"></div>
+</div>
+
+<script>
+// ----- Existing Global Variables and Functions -----
+let undoStack = [];
+let textElements = [];
+// (We no longer use savedState from the old key)
+// let savedState = localStorage.getItem('savedState');
+let zKeyPressed = false;
+let xKeyPressed = false;
+let aKeyPressed = false;
+let resizing = false;
+let currentElement;
+let initialWidth;
+let initialHeight;
+let initialX;
+let initialY;
+let selectedElement = null;
+let slider = document.getElementById('slider');
+let sliderThumb = document.getElementById('slider-thumb');
+
+// ----- New Multi-Page Variables and Initialization -----
+let pages = [];
+let currentPageIndex = 0;
+
+// Try to load multi-page state from localStorage (using key 'savedPagesState')
+const savedPagesState = localStorage.getItem('savedPagesState');
+if (savedPagesState) {
+        const data = JSON.parse(savedPagesState);
+        pages = data.pages;
+        currentPageIndex = data.currentPageIndex;
+        loadPage(currentPageIndex);
+} else {
+        // Initialize with one empty page
+        pages = [[]];
+        currentPageIndex = 0;
+}
+updatePageIndicator();
+
+// ----- Existing Functions -----
+function storeElementState(element) {
+        return {
+text: element.textContent,
+              top: element.offsetTop,
+              left: element.offsetLeft,
+              width: element.offsetWidth,
+              height: element.offsetHeight,
+              fontSize: parseInt(window.getComputedStyle(element).fontSize),
+              whiteSpace: window.getComputedStyle(element).whiteSpace,
+              overflow: window.getComputedStyle(element).overflow
+        };
+}
+
+function createTextElement(item) {
+        const textElement = document.createElement('div');
+        textElement.textContent = item.text;
+        textElement.style.top = item.top + 'px';
+        textElement.style.left = item.left + 'px';
+        textElement.style.width = item.width + 'px';
+        textElement.style.height = item.height + 'px';
+        textElement.style.fontSize = item.fontSize + 'px';
+        textElement.style.whiteSpace = item.whiteSpace || 'nowrap';
+        textElement.style.overflow = item.overflow || 'hidden';
+        textElement.classList.add('draggable');
+
+        // Add RTL support
+        if (/[\u0600-\u06FF]/.test(item.text)) {
+                textElement.dir = 'rtl';
+        }
+
+        document.getElementById('output').appendChild(textElement);
+        textElements.push(textElement);
+        makeDraggable(textElement);
+        return textElement;
+}
+
+document.getElementById('textInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                const text = this.value;
+                if (text) {
+                const item = {
+text: text,
+top: 0,
+left: 0,
+width: 'auto',
+height: 'auto',
+fontSize: 16,
+whiteSpace: 'nowrap',
+overflow: 'hidden'
+};
+createTextElement(item);
+this.value = '';
+}
+}
+});
+
+function makeDraggable(element) {
+        let active = false;
+        let currentX;
+        let currentY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        element.addEventListener('mousedown', dragStart, false);
+        document.addEventListener('mouseup', dragEnd, false);
+        document.addEventListener('mousemove', drag, false);
+
+        function dragStart(e) {
+                if (e.target === element) {
+                        active = true;
+                        initialX = e.clientX;
+                        initialY = e.clientY;
+                }
+        }
+
+        function dragEnd(e) {
+                active = false;
+        }
+
+        function drag(e) {
+                if (active) {
+                        e.preventDefault();
+                        currentX = e.clientX;
+                        currentY = e.clientY;
+                        xOffset = currentX - initialX;
+                        yOffset = currentY - initialY;
+                        element.style.top = (parseInt(element.style.top) || 0) + yOffset + 'px';
+                        element.style.left = (parseInt(element.style.left) || 0) + xOffset + 'px';
+                        initialX = currentX;
+                        initialY = currentY;
+                }
+        }
+}
+
+document.getElementById('saveButton').addEventListener('click', function() {
+    const state = captureState(); // Use the captureState function to get the current state
+
+    fetch('http://127.0.0.1:8080/saveState', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('State saved on server!');
+    })
+    .catch(error => {
+        console.error('Error saving state:', error);
+        alert('Error saving state on server!');
+    });
+});
+
+function captureState() {
+    const elements = document.querySelectorAll('.draggable');
+    return {
+        pages: [{
+            items: Array.from(elements).map(el => ({
+                text: el.innerText,  // or innerHTML if formatting is needed
+                top: el.style.top,
+                left: el.style.left,
+                width: el.style.width,
+                height: el.style.height,
+                fontSize: el.style.fontSize  // Ensure this is captured if set inline
+            }))
+        }],
+        currentPageIndex: 0  // assuming a single page for simplicity
+    };
+}
+
+function loadState() {
+    fetch('http://127.0.0.1:8080/loadState')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Loaded State:', data);
+            applyStateToUI(data.pages[data.currentPageIndex].items);
+        })
+        .catch(error => console.error('Failed to load state:', error));
+}
+
+function applyStateToUI(items) {
+    const container = document.getElementById('output');
+    container.innerHTML = '';  // Clear existing items
+    items.forEach(item => {
+        const elem = document.createElement('div');
+        elem.classList.add('draggable');
+        elem.textContent = item.text;
+        elem.style.position = 'absolute';
+        elem.style.top = item.top;
+        elem.style.left = item.left;
+        elem.style.width = item.width; // Handle the case when width and height might be empty
+        elem.style.height = item.height;
+        elem.style.fontSize = item.fontSize;  // Make sure to reapply fontSize
+        container.appendChild(elem);
+        makeDraggable(elem);
+    });
+}
+
+
+
+document.getElementById('clearButton').addEventListener('click', function() {
+                // Save the current state for undo as one action
+                let currentState = textElements.map(element => storeElementState(element));
+                undoStack.push({ type: 'clear', state: currentState });
+
+                // Remove all elements from the DOM and clear the textElements array
+                textElements.forEach(element => element.remove());
+                textElements = [];
+                // Also clear the current page state
+                pages[currentPageIndex] = [];
+                });
+
+document.getElementById('undoButton').addEventListener('click', function() {
+                if (undoStack.length > 0) {
+                let lastAction = undoStack.pop();
+                if (lastAction.type === 'clear') {
+                lastAction.state.forEach(item => {
+                                createTextElement(item);
+                                });
+                } else {
+                createTextElement(lastAction);
+                }
+                } else {
+                alert('Nothing to undo!');
+                }
+                });
+                
+                
+document.getElementById('loadButton').addEventListener('click', function() {
+    fetch('http://127.0.0.1:8080/loadState')
+        .then(response => response.json())
+        .then(data => {
+            console.log('State loaded from server:', data);
+            applyStateToUI(data.pages[data.currentPageIndex].items);
+        })
+        .catch(error => {
+            console.error('Failed to load state:', error);
+            alert('Failed to load state from server.');
+        });
+});
+
+function handleLoadedState(data) {
+    // Process and apply the loaded state to your application
+    console.log('Implement state handling logic here.');
+}
+
+// ----- New Multi-Page Functions and Event Listeners -----
+function saveCurrentPage() {
+        // Save current page state from the DOM elements
+        pages[currentPageIndex] = textElements.map(element => storeElementState(element));
+}
+
+function clearCurrentPage() {
+        textElements.forEach(element => element.remove());
+        textElements = [];
+}
+
+function loadPage(pageIndex) {
+        clearCurrentPage();
+        if (pages[pageIndex]) {
+                pages[pageIndex].forEach(item => {
+                                createTextElement(item);
+                                });
+        }
+}
+
+function updatePageIndicator() {
+        document.getElementById('pageIndicator').textContent = "Page " + (currentPageIndex + 1) + " of " + pages.length;
+}
+
+document.getElementById('newPageButton').addEventListener('click', function() {
+                // Save current page before creating a new one
+                saveCurrentPage();
+                pages.push([]);
+                currentPageIndex = pages.length - 1;
+                clearCurrentPage();
+                updatePageIndicator();
+                });
+
+document.getElementById('prevPageButton').addEventListener('click', function() {
+                if (currentPageIndex > 0) {
+                saveCurrentPage();
+                currentPageIndex--;
+                loadPage(currentPageIndex);
+                updatePageIndicator();
+                } else {
+                alert("No previous page.");
+                }
+                });
+
+document.getElementById('nextPageButton').addEventListener('click', function() {
+                if (currentPageIndex < pages.length - 1) {
+                saveCurrentPage();
+                currentPageIndex++;
+                loadPage(currentPageIndex);
+                updatePageIndicator();
+                } else {
+                alert("No next page. Create a new page.");
+                }
+                });
+
+
+
+
+
+                
+// ----- Existing Event Listeners for Keys, Resizing, etc. -----
+// Modified event listeners for z, x, and a keys using e.code
+document.addEventListener('keydown', function(e) {
+    if (e.code === 'KeyZ' && !zKeyPressed) {
+        zKeyPressed = true;
+        document.querySelectorAll('.draggable').forEach(element => {
+            if (!element.querySelector('.delete-button')) {
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = 'Delete';
+                deleteButton.classList.add('delete-button');
+                deleteButton.onclick = function() { element.remove(); };
+                element.appendChild(deleteButton);
+
+                const editButton = document.createElement('button');
+                editButton.innerHTML = 'Edit';
+                editButton.classList.add('edit-button');
+                editButton.onclick = function() { /* Add edit functionality */ };
+                element.appendChild(editButton);
+            }
+        });
+    } else if (e.code === 'KeyX' && !xKeyPressed) {
+        xKeyPressed = true;
+        // Add logic for resize button
+    }
+});
+document.addEventListener('keyup', function(e) {
+    if (e.code === 'KeyZ') {
+        zKeyPressed = false;
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.remove();
+        });
+    } else if (e.code === 'KeyX') {
+        xKeyPressed = false;
+        document.querySelectorAll('.resize-button').forEach(button => {
+            button.remove();
+        });
+    }
+});
+
+
+document.addEventListener('mousedown', function(e) {
+                if (xKeyPressed) {
+                const target = e.target;
+                if (target.classList.contains('resize-button')) {
+                resizing = true;
+                currentElement = target.parentNode;
+                initialWidth = currentElement.offsetWidth;
+                initialHeight = currentElement.offsetHeight;
+                initialX = e.clientX;
+                initialY = e.clientY;
+                }
+                }
+                if (e.target.classList.contains('draggable')) {
+                selectedElement = e.target;
+                }
+                });
+
+document.addEventListener('mousemove', function(e) {
+                if (xKeyPressed && resizing) {
+                const width = Math.max(initialWidth + (e.clientX - initialX), 20);
+                const height = Math.max(initialHeight + (e.clientY - initialY), 20);
+                currentElement.style.width = width + 'px';
+                currentElement.style.height = height + 'px';
+                currentElement.style.whiteSpace = 'normal';
+                currentElement.style.overflow = 'auto';
+                }
+                });
+
+document.addEventListener('mouseup', function(e) {
+                if (xKeyPressed && resizing) {
+                resizing = false;
+                }
+                });
+
+ document.addEventListener('wheel', function(e) {
+    if (aKeyPressed && (selectedElement || e.target.classList.contains('draggable'))) {
+        const targetElement = selectedElement || e.target;
+        if (targetElement.classList.contains('draggable')) {
+            const currentFontSize = parseInt(window.getComputedStyle(targetElement).fontSize);
+            let newFontSize;
+            if (e.deltaY < 0) {
+                newFontSize = Math.min(currentFontSize + 1, 50);
+            } else {
+                newFontSize = Math.max(currentFontSize - 1, 10);
+            }
+            targetElement.style.fontSize = newFontSize + 'px';
+
+            // Update the element's stored state
+            const index = textElements.indexOf(targetElement);
+            if (index !== -1) {
+                textElements[index].fontSize = newFontSize; // Ensure this matches how you store your state
+            }
+        }
+    }
+});
+
+document.addEventListener('selectionchange', function() {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const parentElement = range.commonAncestorContainer.parentElement;
+                if (parentElement && parentElement.classList.contains('draggable')) {
+                selectedElement = parentElement;
+                }
+                }
+                });
+
+slider.addEventListener('mousedown', function(e) {
+                const sliderRect = slider.getBoundingClientRect();
+                const thumbPosition = e.clientX - sliderRect.left;
+                sliderThumb.style.left = thumbPosition + 'px';
+                if (selectedElement) {
+                const newFontSize = Math.max(10, Math.min(50, thumbPosition));
+                selectedElement.style.fontSize = newFontSize + 'px';
+                }
+                });
+
+slider.addEventListener('mousemove', function(e) {
+                if (e.buttons === 1) {
+                const sliderRect = slider.getBoundingClientRect();
+                const thumbPosition = e.clientX - sliderRect.left;
+                sliderThumb.style.left = thumbPosition + 'px';
+                if (selectedElement) {
+                const newFontSize = Math.max(10, Math.min(50, thumbPosition));
+                selectedElement.style.fontSize = newFontSize + 'px';
+                }
+                }
+                });
+
+// Handle shift-click for adding new text
+document.getElementById('output').addEventListener('click', function(e) {
+                if (zKeyPressed) {
+                const target = e.target;
+                if (target.classList.contains('draggable') || target.classList.contains('delete-button')) {
+                const textElement = target.classList.contains('draggable') ? target : target.parentNode;
+                textElement.remove();
+                textElements = textElements.filter(element => element !== textElement);
+                } else if (target.classList.contains('edit-button')) {
+                const textElement = target.parentNode;
+                textElement.contentEditable = true;
+                textElement.focus();
+                }
+                } else if (e.shiftKey) {
+                handleShiftClick(e);
+                }
+                });
+
+function handleShiftClick(e) {
+        const rect = document.getElementById('output').getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const tempInput = document.createElement('input');
+        tempInput.type = 'text';
+        tempInput.style.position = 'absolute';
+        tempInput.style.top = y + 'px';
+        tempInput.style.left = x + 'px';
+        tempInput.style.width = '100px';
+        tempInput.style.height = '20px';
+        document.getElementById('output').appendChild(tempInput);
+
+        setTimeout(() => {
+                        tempInput.focus();
+                        }, 0);
+
+        tempInput.addEventListener('keypress', function(event) {
+                        if (event.key === 'Enter') {
+                        const item = {
+text: this.value,
+top: parseInt(this.style.top),
+left: parseInt(this.style.left),
+width: 'auto',
+height: 'auto',
+fontSize: 16,
+whiteSpace: 'nowrap',
+overflow: 'hidden'
+};
+const newElement = createTextElement(item);
+textElements.push(newElement);
+this.remove();
+}
+});
+}
+</script>
+</body>
+</html>

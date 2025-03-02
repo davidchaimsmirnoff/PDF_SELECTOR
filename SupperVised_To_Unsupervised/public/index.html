@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Learning</title>
+
+    <style>
+        /* Center the entire page */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100vh; /* Full viewport height */
+            margin: 0;
+            background-color: #f8f9fa; /* Light background */
+        }
+
+        /* Style the container */
+        .container {
+            text-align: center; /* Center text */
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+        }
+
+        /* Input and button should be on the same line */
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Style input field */
+        input {
+            width: 60%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Style button */
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* AI response should be clearly separated */
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            background: #eef2f3;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Train the AI</h1>
+
+        <!-- Input and button in the same row -->
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Type something...">
+            <button onclick="trainModel()">Submit</button>
+        </div>
+
+        <!-- AI response section -->
+        <h2>AI's Response:</h2>
+        <p id="output">Waiting for input...</p>
+    </div>
+
+
+    <div id="ratingBox">
+        <p>How accurate is this response?</p>
+        <label>
+            <input type="radio" name="rating" value="1"> 1
+        </label>
+        <label>
+            <input type="radio" name="rating" value="2"> 2
+        </label>
+        <label>
+            <input type="radio" name="rating" value="3"> 3
+        </label>
+        <label>
+            <input type="radio" name="rating" value="4"> 4
+        </label>
+        <label>
+            <input type="radio" name="rating" value="5"> 5
+        </label>
+        <label>
+            <input type="radio" name="rating" value="6"> 6
+        </label>
+        <label>
+            <input type="radio" name="rating" value="7"> 7
+        </label>
+        <label>
+            <input type="radio" name="rating" value="8"> 8
+        </label>
+        <label>
+            <input type="radio" name="rating" value="9"> 9
+        </label>
+        <label>
+            <input type="radio" name="rating" value="10"> 10
+        </label>
+        <button onclick="submitRating('${input}', '${responseData.response}')">Submit Rating</button>
+    </div>
+    
+
+    <script src="script.js"></script>
+</body>
+</html>

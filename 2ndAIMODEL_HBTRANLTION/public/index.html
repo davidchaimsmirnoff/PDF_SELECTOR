@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hebrew Translator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 50px;
+        }
+        input, button, textarea {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Hebrew Translator</h1>
+
+    <input type="text" id="userInput" placeholder="Enter Hebrew text">
+    <button onclick="translateHebrew()">Translate</button>
+
+    <div id="output">Waiting for input...</div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hebrew Word Trainer</title>
+    <style>
+        body { font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; max-width: 600px; margin: auto; }
+        input, textarea, button { width: 100%; margin-top: 10px; font-size: 16px; padding: 8px; }
+        #wordList { margin-top: 20px; }
+        .word-entry { background: #f9f9f9; padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .word-title { font-weight: bold; cursor: pointer; color: #007bff; }
+        .word-meaning { margin-top: 5px; font-size: 14px; display: none; }
+        .suggestions { background: white; border: 1px solid #ddd; max-height: 150px; overflow-y: auto; position: absolute; display: none; width: calc(100% - 16px); }
+        .suggestion { padding: 5px; cursor: pointer; }
+        .suggestion:hover { background: #ddd; }
+    </style>
+</head>
+<body>
+
+    <h2>Hebrew Word Trainer</h2>
+    
+    <label>Enter Hebrew Word:</label>
+    <input type="text" id="wordInput" oninput="showSuggestions()" placeholder="Type a word...">
+    <div id="suggestions" class="suggestions"></div>
+
+    <label>Enter Meanings (One per line):</label>
+    <textarea id="meaningInput" rows="4" placeholder="Add explanations or translations..."></textarea>
+
+    <button onclick="saveWord()">Save Word</button>
+
+    <h3>Saved Words:</h3>
+    <div id="wordList"></div>
+
+    <script>
+        let wordsData = JSON.parse(localStorage.getItem("wordsData")) || {};
+
+        function saveWord() {
+            let word = document.getElementById("wordInput").value.trim();
+            let meanings = document.getElementById("meaningInput").value.trim().split("\n");
+
+            if (!word || meanings.length === 0 || meanings[0] === "") {
+                alert("Please enter a word and at least one meaning.");
+                return;
+            }
+
+            wordsData[word] = meanings;
+            localStorage.setItem("wordsData", JSON.stringify(wordsData));
+
+            document.getElementById("wordInput").value = "";
+            document.getElementById("meaningInput").value = "";
+
+            displayWords();
+        }
+
+        function displayWords() {
+            let wordList = document.getElementById("wordList");
+            wordList.innerHTML = "";
+
+            Object.keys(wordsData).forEach(word => {
+                let entry = document.createElement("div");
+                entry.classList.add("word-entry");
+
+                let title = document.createElement("div");
+                title.classList.add("word-title");
+                title.innerText = word;
+                title.onclick = function() {
+                    let meaningDiv = this.nextElementSibling;
+                    meaningDiv.style.display = meaningDiv.style.display === "none" ? "block" : "none";
+                };
+
+                let meaningDiv = document.createElement("div");
+                meaningDiv.classList.add("word-meaning");
+                meaningDiv.style.display = "none";
+                meaningDiv.innerHTML = wordsData[word].join("<br>");
+
+                entry.appendChild(title);
+                entry.appendChild(meaningDiv);
+                wordList.appendChild(entry);
+            });
+        }
+
+        function showSuggestions() {
+            let input = document.getElementById("wordInput").value.trim();
+            let suggestionBox = document.getElementById("suggestions");
+            
+            if (input === "") {
+                suggestionBox.style.display = "none";
+                return;
+            }
+
+            let matches = Object.keys(wordsData).filter(word => word.includes(input));
+
+            suggestionBox.innerHTML = "";
+            if (matches.length > 0) {
+                matches.forEach(match => {
+                    let suggestion = document.createElement("div");
+                    suggestion.classList.add("suggestion");
+                    suggestion.innerText = match;
+                    suggestion.onclick = function() {
+                        document.getElementById("wordInput").value = match;
+                        document.getElementById("meaningInput").value = wordsData[match].join("\n");
+                        suggestionBox.style.display = "none";
+                    };
+                    suggestionBox.appendChild(suggestion);
+                });
+                suggestionBox.style.display = "block";
+            } else {
+                suggestionBox.style.display = "none";
+            }
+        }
+
+        document.addEventListener("click", function(event) {
+            if (!event.target.closest("#suggestions") && event.target.id !== "wordInput") {
+                document.getElementById("suggestions").style.display = "none";
+            }
+        });
+
+        window.onload = displayWords;
+    </script>
+
+</body>
+</html>

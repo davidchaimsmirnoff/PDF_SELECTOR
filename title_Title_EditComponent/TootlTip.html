@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draggable & Resizable Tooltips</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+
+        .tooltip {
+            position: absolute;
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 14px;
+            visibility: hidden;
+            transform: translateY(-40px);
+            white-space: pre-wrap;
+            max-width: 250px;
+            min-width: 150px;
+            min-height: 80px;
+            z-index: 1000;
+            resize: both;
+            overflow: hidden;
+        }
+
+        .tooltip textarea {
+            font-size: 14px;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            color: black;
+            border: none;
+            outline: none;
+            resize: none;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .tooltip .content {
+            font-size: 14px;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            color: black;
+            padding: 5px;
+            box-sizing: border-box;
+            user-select: none;
+            cursor: default;
+        }
+
+        .drag-handle {
+            width: 100%;
+            height: 8px;
+            background: gray;
+            cursor: grab;
+            text-align: center;
+            color: white;
+            font-size: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .drag-handle-bottom {
+            width: 100%;
+            height: 8px;
+            background: gray;
+            cursor: grab;
+            text-align: center;
+            color: white;
+            font-size: 10px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .tooltip.dragging {
+            cursor: grabbing;
+        }
+
+
+        #tooltip2 {
+            min-width: 700px;  /* Start with a wider width */
+            min-height: 120px; /* Make it slightly taller */
+            font-size: 16px;   /* Make text slightly bigger */
+            background-color: #f0f0f0; /* Light gray background */
+            border-color: #555; /* Darker border */
+        }
+
+
+    </style>
+</head>
+<body>
+    <p>Select a word and press <strong>Shift + Space</strong> to toggle an editable tooltip.</p>
+    <p>Select a word and press <strong>Shift + D</strong> to toggle a non-editable tooltip.</p>
+
+    <p id="text">דעת ותבונה :פתיחה ראשונה : ישמע השומע ויבין המשכיל את אשר חכמים הגידו...</p>
+
+    <div id="tooltip1" class="tooltip">
+        <div class="drag-handle"></div>
+        <textarea></textarea>
+        <div class="drag-handle-bottom"></div>
+    </div>
+
+
+
+    
+
+    <div id="tooltip2" class="tooltip">
+        <div class="drag-handle"></div>
+        <div class="content">Tooltip Content</div>
+        <div class="drag-handle-bottom"></div>
+    </div>
+
+    <script>
+        let tooltipVisible1 = false;
+        let tooltipVisible2 = false;
+        let tooltipData = JSON.parse(localStorage.getItem("tooltipData")) || {};
+        let tooltipPositions = JSON.parse(localStorage.getItem("tooltipPositions")) || {};
+        let tooltipPositions2 = JSON.parse(localStorage.getItem("tooltipPositions2")) || {};
+        let lastSelectedText = "";
+        let lastSelectedText2 = "";
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+    
+        document.addEventListener("keydown", function(event) {
+            let selection = window.getSelection();
+            let selectedText = selection.toString().trim();
+    
+            if (event.shiftKey && event.code === "Space") {
+                event.preventDefault();
+                toggleTooltip("tooltip1", selectedText, true);
+            } 
+            
+            if (event.shiftKey && event.code === "KeyD") {
+                event.preventDefault();
+                toggleTooltip("tooltip2", selectedText, false);
+            }
+        });
+    
+        function toggleTooltip(tooltipId, selectedText, isEditable) {
+            let tooltip = document.getElementById(tooltipId);
+            let tooltipVisible = tooltipId === "tooltip1" ? tooltipVisible1 : tooltipVisible2;
+    
+            if (tooltipVisible) {
+                if (tooltipId === "tooltip1") {
+                    let textarea = tooltip.querySelector("textarea");
+                    if (textarea) {
+                        tooltipData[lastSelectedText] = textarea.value.trim(); // Save text before closing
+                        localStorage.setItem("tooltipData", JSON.stringify(tooltipData));
+                    }
+                }
+                tooltip.style.visibility = "hidden";
+                if (tooltipId === "tooltip1") tooltipVisible1 = false;
+                else tooltipVisible2 = false;
+            } else if (selectedText) {
+                let range = window.getSelection().getRangeAt(0);
+                let rect = range.getBoundingClientRect();
+                
+                if (tooltipId === "tooltip1") lastSelectedText = selectedText;
+                else lastSelectedText2 = selectedText;
+    
+                if (isEditable) {
+                    tooltip.innerHTML = `<div class='drag-handle'></div>` + 
+                        `<textarea>${tooltipData[selectedText] || "Edit me..."}</textarea>` +
+                        `<div class='drag-handle-bottom'></div>`;
+                    
+                    let textarea = tooltip.querySelector("textarea");
+                    textarea.focus();
+                    
+                    textarea.addEventListener("keydown", function(e) {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            tooltipData[selectedText] = textarea.value.trim();
+                            localStorage.setItem("tooltipData", JSON.stringify(tooltipData));
+                        }
+                    });
+                } else {
+                    tooltip.innerHTML = `<div class='drag-handle'></div>` + 
+                        `<div class='content'>${selectedText}</div>` +
+                        `<div class='drag-handle-bottom'></div>`;
+                }
+    
+                let positions = tooltipId === "tooltip1" ? tooltipPositions : tooltipPositions2;
+    
+                if (positions[selectedText]) {
+                    tooltip.style.top = positions[selectedText].top + "px";
+                    tooltip.style.left = positions[selectedText].left + "px";
+                } else {
+                    tooltip.style.top = window.scrollY + rect.top - 50 + "px";
+                    tooltip.style.left = window.scrollX + rect.left + "px";
+                }
+    
+                tooltip.style.visibility = "visible";
+                if (tooltipId === "tooltip1") tooltipVisible1 = true;
+                else tooltipVisible2 = true;
+    
+                enableDrag(tooltip.querySelector(".drag-handle"), tooltipId);
+                enableDrag(tooltip.querySelector(".drag-handle-bottom"), tooltipId);
+            }
+        }
+    
+        function enableDrag(handle, tooltipId) {
+            handle.addEventListener("mousedown", function(e) {
+                e.preventDefault();
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                let tooltip = document.getElementById(tooltipId);
+                initialX = tooltip.offsetLeft;
+                initialY = tooltip.offsetTop;
+    
+                tooltip.classList.add("dragging");
+            });
+        }
+    
+        document.addEventListener("mousemove", function(e) {
+            if (isDragging) {
+                let tooltip = document.querySelector(".dragging");
+                let deltaX = e.clientX - startX;
+                let deltaY = e.clientY - startY;
+                tooltip.style.left = initialX + deltaX + "px";
+                tooltip.style.top = initialY + deltaY + "px";
+            }
+        });
+    
+        document.addEventListener("mouseup", function() {
+            if (isDragging) {
+                let tooltip = document.querySelector(".dragging");
+                tooltip.classList.remove("dragging");
+                isDragging = false;
+    
+                let tooltipId = tooltip.id;
+                let positions = tooltipId === "tooltip1" ? tooltipPositions : tooltipPositions2;
+                let lastText = tooltipId === "tooltip1" ? lastSelectedText : lastSelectedText2;
+    
+                positions[lastText] = {
+                    left: parseInt(tooltip.style.left, 10),
+                    top: parseInt(tooltip.style.top, 10)
+                };
+                localStorage.setItem(tooltipId === "tooltip1" ? "tooltipPositions" : "tooltipPositions2", JSON.stringify(positions));
+            }
+        });
+    </script>
+    
+</body>
+</html>

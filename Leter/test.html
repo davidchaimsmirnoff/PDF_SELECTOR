@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hebrew Letter Counter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            font-size: 18px;
+            font-family: "David", "Noto Sans Hebrew", Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 10px;
+            border: 2px solid black;
+            border-radius: 5px;
+            resize: none;
+            background-color: #f8f8f8;
+        }
+
+        .hebrew-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin: 5px;
+        }
+
+        .above {
+            font-size: 12px;
+            color: red;
+            font-weight: bold;
+        }
+
+        .letter {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .hebrew-wrapper {
+            direction: rtl;
+            display: inline-block;
+            text-align: right;
+        }
+
+        /* Selected Text Display */
+        #selected-text {
+            font-size: 30px; /* Matches letter size */
+            font-weight: bold;
+            display: block;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h3> מספר המלות / Hebrew Letter Counter</h3>
+
+    <!-- Selected Text Display -->
+    <div id="selected-text"></div>
+
+    <div class="hebrew-wrapper" id="hebrew-letters">
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">א</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ב</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ג</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ד</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ה</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ו</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ז</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ח</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ט</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">י</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">כ</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ל</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">מ</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">נ</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ס</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ע</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">פ</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">צ</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ק</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ר</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ש</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ת</span></span>
+
+        <!-- Final Hebrew Letters -->
+        <span class="hebrew-container"><span class="above"></span><span class="letter">-</span></span>
+
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ם</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ן</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ץ</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ף</span></span>
+        <span class="hebrew-container"><span class="above">[0]</span><span class="letter">ך</span></span>
+    </div>
+
+    <textarea readonly id="text-box">
+דעת ותבונה :פתיחה ראשונה : ישמע השומע ויבין המשכיל את אשר חכמים הגידו...
+    </textarea>
+
+    <script>
+        document.addEventListener("keydown", function(event) {
+            if (event.shiftKey && event.code === "KeyD") {
+                event.preventDefault();
+                countLetters();
+            }
+        });
+
+        function countLetters() {
+            let selection = window.getSelection().toString().trim();
+            let selectedTextDisplay = document.getElementById("selected-text");
+
+            if (!selection) {
+                selectedTextDisplay.innerText = ""; // Clear selection if nothing selected
+                return;
+            }
+
+            selectedTextDisplay.innerText = selection; // Show selected text above
+
+            let letters = document.querySelectorAll(".hebrew-container");
+            let counts = {};
+
+            // Reset all counts to zero and turn them red
+            letters.forEach(el => {
+                let letter = el.querySelector(".letter").innerText;
+                let above = el.querySelector(".above");
+                counts[letter] = 0;
+                above.innerText = `[0]`;
+                above.style.color = "red"; // Reset to red
+            });
+
+            // Count occurrences of each letter in the selection
+            for (let char of selection) {
+                if (counts.hasOwnProperty(char)) {
+                    counts[char]++;
+                }
+            }
+
+            // Update the numbers above the letters and turn green if found
+            letters.forEach(el => {
+                let letter = el.querySelector(".letter").innerText;
+                let above = el.querySelector(".above");
+                if (counts[letter] > 0) {
+                    above.innerText = `[${counts[letter]}]`;
+                    above.style.color = "green"; // Highlight found letters in green
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

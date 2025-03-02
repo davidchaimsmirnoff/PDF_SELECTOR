@@ -1,0 +1,277 @@
+{
+  "knowledge": {
+    "hello": "Hi there!",
+    "who are you?": "I am an AI that learns from you.",
+    "what is AI?": "AI stands for Artificial Intelligence.",
+    "hi": "Hello",
+    "what do you know about the torah": "what is there to know",
+    "what do you think about the torah": "what do you think?",
+    "שלום": "This means hello also peace and harmony in a way also ",
+    "דעת ותבונה": "daat ve tevunah meaning knowledge and understanding is a rough translation of this",
+    "פתיחה ראשונה": "Peticha meas like opening in other words introduction. Like the first introduction",
+    "פתיחה ": "means opening",
+    "ראשונה ": "beginning",
+    "ישמע ": "I am thinking... but I am unsure. What?",
+    "ישמע": "It will be heard",
+    "ישמע השומע": "the one who hears will hear",
+    "ויבין": "and will understand",
+    "המשכיל": "the inteligent",
+    "ויבין המשכיל": "and the intelligent will understand",
+    "את אשר חכמים הגידו": "that that the sages have said",
+    "ואשר הזהירו והודיעו": "and that they warned and made known",
+    "לכל איש": "to every man",
+    "איש": "man",
+    "איש ישראל": "Man of Israel",
+    "לגשת אל הקודש": "To approach to the holy",
+    "בעסק סודות התורה": "in the business and dealings of the secrets of the Torah",
+    "הקדושה": "the holy",
+    "סודות": "secrets",
+    "הזהירו והודיעו": "they warned and made known",
+    "לגשת": "to approach",
+    "אל": "to",
+    "ואשר הזהירו": "and that they warned",
+    "והודיעו": "And they made know",
+    "בחיוב": "in the obligation",
+    "העסק": "the dealing",
+    "עץ חיים היא": "tree of life it is",
+    "${input}": "${responseData.response}",
+    "עץ": "tree"
+  },
+  "history": [
+    {
+      "input": "hello",
+      "response": "Hi there!",
+      "learned_at": "2025-02-20T12:00:00Z"
+    },
+    {
+      "input": "who are you?",
+      "response": "I am an AI that learns from you.",
+      "learned_at": "2025-02-20T12:05:30Z"
+    },
+    {
+      "input": "hi",
+      "response": "Hello",
+      "learned_at": "2025-02-21T05:49:54.478Z",
+      "method": "supervised"
+    },
+    {
+      "input": "what do you know about the torah",
+      "response": "what is there to know",
+      "learned_at": "2025-02-21T05:54:41.747Z",
+      "method": "supervised"
+    },
+    {
+      "input": "what do you think about the torah",
+      "response": "what do you think?",
+      "learned_at": "2025-02-21T06:01:48.381Z",
+      "method": "supervised"
+    },
+    {
+      "input": "שלום",
+      "response": "This means hello also peace and harmony in a way also ",
+      "learned_at": "2025-02-21T06:03:28.881Z",
+      "method": "supervised"
+    },
+    {
+      "input": "דעת ותבונה",
+      "response": "daat ve tevunah meaning knowledge and understanding is a rough translation of this",
+      "learned_at": "2025-02-21T06:06:34.730Z",
+      "method": "supervised"
+    },
+    {
+      "input": "פתיחה ראשונה",
+      "response": "Peticha meas like opening in other words introduction. Like the first introduction",
+      "learned_at": "2025-02-21T06:07:27.731Z",
+      "method": "supervised"
+    },
+    {
+      "input": "פתיחה ",
+      "response": "Peticha meas like opening in other words introduction. Like the first introduction",
+      "learned_at": "2025-02-21T06:15:38.654Z",
+      "method": "supervised",
+      "rating": "8"
+    },
+    {
+      "input": "פתיחה ",
+      "response": "means opening",
+      "learned_at": "2025-02-21T06:24:08.207Z",
+      "method": "supervised",
+      "rating": 8
+    },
+    {
+      "input": "ראשונה ",
+      "response": "beginning",
+      "learned_at": "2025-02-21T06:37:30.330Z",
+      "method": "supervised",
+      "rating": 3
+    },
+    {
+      "input": "ישמע ",
+      "response": "It will be heard",
+      "learned_at": "2025-02-21T06:53:11.713Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "ישמע השומע",
+      "response": "the one who hears will hear",
+      "learned_at": "2025-02-21T07:00:44.604Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "ויבין",
+      "response": "and will understand",
+      "learned_at": "2025-02-21T07:03:00.064Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "המשכיל",
+      "response": "the inteligent",
+      "learned_at": "2025-02-21T07:03:28.876Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "ויבין המשכיל",
+      "response": "and the intelligent will understand",
+      "learned_at": "2025-02-21T07:04:06.582Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "את אשר חכמים הגידו",
+      "response": "that that the sages have said",
+      "learned_at": "2025-02-21T07:05:25.586Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "ואשר הזהירו והודיעו",
+      "response": "and that they warned and made known",
+      "learned_at": "2025-02-21T07:06:09.826Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "לכל איש",
+      "response": "to every man",
+      "learned_at": "2025-02-21T07:06:29.723Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "איש",
+      "response": "man",
+      "learned_at": "2025-02-21T07:06:50.075Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "איש ישראל",
+      "response": "Man of Israel",
+      "learned_at": "2025-02-21T07:07:16.815Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "לגשת אל הקודש",
+      "response": "To approach to the holy",
+      "learned_at": "2025-02-21T07:08:58.348Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "בעסק סודות התורה",
+      "response": "in the business and dealings of the secrets of the Torah",
+      "learned_at": "2025-02-21T07:09:46.076Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "הקדושה",
+      "response": "the holy",
+      "learned_at": "2025-02-21T07:10:09.700Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "סודות",
+      "response": "secrets",
+      "learned_at": "2025-02-21T07:10:28.671Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "הזהירו והודיעו",
+      "response": "they warned and made known",
+      "learned_at": "2025-02-21T07:11:09.605Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "לגשת",
+      "response": "to approach",
+      "learned_at": "2025-02-21T07:28:42.967Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "אל",
+      "response": "to",
+      "learned_at": "2025-02-21T07:29:05.508Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "ואשר הזהירו",
+      "response": "and that they warned",
+      "learned_at": "2025-02-21T07:33:28.838Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "והודיעו",
+      "response": "And they made know",
+      "learned_at": "2025-02-21T07:48:43.743Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "בחיוב",
+      "response": "in the obligation",
+      "learned_at": "2025-02-21T08:24:03.983Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "העסק",
+      "response": "the dealing",
+      "learned_at": "2025-02-21T08:27:44.880Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "עץ חיים היא",
+      "response": "tree of life it is",
+      "learned_at": "2025-02-21T08:28:34.053Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "עץ",
+      "response": "tree",
+      "learned_at": "2025-02-21T08:49:55.868Z",
+      "method": "supervised",
+      "rating": null
+    },
+    {
+      "input": "${input}",
+      "response": "${responseData.response}",
+      "learned_at": "2025-02-21T08:56:32.678Z",
+      "method": "unsupervised",
+      "rating": 10
+    }
+  ]
+}

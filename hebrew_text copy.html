@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Content Editor</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #content { display: inline-block; padding: 10px; border: 1px solid black; cursor: pointer; min-width: 300px; }
+        textarea { width: 100%; height: 200px; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <h1>Live Content Viewer</h1>
+    <p id="content">Loading...</p>
+
+    <script>
+        const socket = io();
+        const contentElement = document.getElementById("content");
+        let isEditing = false;
+
+        function fetchContent() {
+            fetch("/content")
+                .then(response => response.json())
+                .then(data => {
+                    if (!isEditing) {
+                        contentElement.innerText = data.content;
+                    }
+                });
+        }
+
+        // Load initial content
+        fetchContent();
+
+        // Update content when server notifies change
+        socket.on("content-updated", (newContent) => {
+            if (!isEditing) {
+                contentElement.innerText = newContent;
+            }
+        });
+
+        // Convert to textarea on Shift+Enter
+        contentElement.addEventListener("keydown", (event) => {
+            if (event.shiftKey && event.key === "Enter") {
+                event.preventDefault();
+                if (!isEditing) {
+                    // Convert <p> to <textarea>
+                    const textarea = document.createElement("textarea");
+                    textarea.value = contentElement.innerText;
+                    contentElement.replaceWith(textarea);
+                    textarea.focus();
+                    isEditing = true;
+
+                    // Listen for Shift+Enter again to save
+                    textarea.addEventListener("keydown", (event) => {
+                        if (event.shiftKey && event.key === "Enter") {
+                            event.preventDefault();
+                            saveContent(textarea.value);
+                        }
+                    });
+                }
+            }
+        });
+
+        function saveContent(newText) {
+            fetch("/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: newText })
+            }).then(() => {
+                location.reload(); // Refresh to get new content
+            }).catch(err => console.error("Error saving:", err));
+        }
+    </script>
+
+</body>
+</html>

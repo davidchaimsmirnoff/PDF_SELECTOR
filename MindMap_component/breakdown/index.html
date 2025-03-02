@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Box Editor</title>
+  <style>
+    /* Container “box area” covering most of the page with a bold border */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    #container {
+      width: 90%;
+      height: 90%;
+      margin: 5% auto;
+      border: 3px solid black;
+      position: relative;
+      background: #f9f9f9;
+    }
+    /* The draggable content box – initially empty */
+    .content-box {
+      position: absolute;
+      border: 2px solid #333;
+      padding: 10px;
+      background: #fff;
+      cursor: move;
+      min-width: 100px;
+      min-height: 50px;
+      user-select: none;
+    }
+    /* The contenteditable input area for edit mode */
+    .edit-input {
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+    /* Icons for delete and edit (shown when holding z) */
+    .icon {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .delete-icon {
+      top: 0;
+      right: 0;
+      background: red;
+      color: white;
+    }
+    .edit-icon {
+      top: 0;
+      right: 25px;
+      background: green;
+      color: white;
+    }
+    /* Resize handle (shown when holding x) */
+    .resize-handle {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: gray;
+      bottom: 0;
+      right: 0;
+      cursor: se-resize;
+      z-index: 10;
+    }
+    /* Text slider (shown when holding a and text is selected) */
+    .text-slider {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <!-- The content box will be created/edited dynamically -->
+  </div>
+  <script>
+    // Global mode: "place" or "edit"
+    let mode = "place";
+    const container = document.getElementById("container");
+    let contentBox = null; // The current box element
+    let state = {}; // Our simulated state
+
+    // Flags for modifier keys
+    let shiftPressed = false, zPressed = false, xPressed = false, aPressed = false;
+    
+    // Variables for dragging
+    let isDragging = false, dragOffsetX = 0, dragOffsetY = 0;
+    
+    // Variables for resizing
+    let isResizing = false;
+    
+    // For text slider
+    let textSlider = null;
+    
+    // For z-mode icons
+    let deleteIcon = null, editIcon = null;
+
+    // Utility: simulate saving state (here: log and store in localStorage)
+    function saveState() {
+      if (!contentBox) return;
+      state = {
+        content: contentBox.innerHTML,
+        position: {
+          left: contentBox.style.left,
+          top: contentBox.style.top
+        },
+        size: {
+          width: contentBox.style.width,
+          height: contentBox.style.height
+        },
+        textSize: contentBox.style.fontSize || "16px"
+      };
+      console.log("State saved:", JSON.stringify(state));
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+
+    // Create a new content box at a given position
+    function createContentBox(x, y) {
+      contentBox = document.createElement("div");
+      contentBox.className = "content-box";
+      contentBox.style.left = x + "px";
+      contentBox.style.top = y + "px";
+      contentBox.style.width = "200px";
+      contentBox.style.height = "100px";
+      contentBox.innerHTML = "";
+      container.appendChild(contentBox);
+      addDragListeners();
+    }
+    
+    // Add dragging listeners to the content box
+    function addDragListeners() {
+      contentBox.addEventListener("mousedown", (e) => {
+        // Ignore clicks on icons, resize handle, or slider
+        if(e.target.classList.contains("icon") || e.target.classList.contains("resize-handle") || e.target.classList.contains("text-slider")) {
+          return;
+        }
+        if(mode !== "place") return;
+        isDragging = true;
+        // Use offset relative to the box itself
+        dragOffsetX = e.offsetX;
+        dragOffsetY = e.offsetY;
+      });
+      document.addEventListener("mousemove", (e) => {
+        if(isDragging && mode === "place") {
+          const rect = container.getBoundingClientRect();
+          const newX = e.clientX - rect.left - dragOffsetX;
+          const newY = e.clientY - rect.top - dragOffsetY;
+          contentBox.style.left = newX + "px";
+          contentBox.style.top = newY + "px";
+        }
+      });
+      document.addEventListener("mouseup", () => {
+        if(isDragging) {
+          isDragging = false;
+          saveState();
+        }
+      });
+    }
+    
+    // Show z-mode icons (delete & edit) in the top right corner
+    function showZIcons() {
+      if(!contentBox) return;
+      if(!deleteIcon) {
+        deleteIcon = document.createElement("div");
+        deleteIcon.className = "icon delete-icon";
+        deleteIcon.innerHTML = "🗑";
+        deleteIcon.addEventListener("click", (e) => {
+          if(zPressed && mode === "place") {
+            container.removeChild(contentBox);
+            contentBox = null;
+            state = {};
+            removeZIcons();
+          }
+          e.stopPropagation();
+        });
+        contentBox.appendChild(deleteIcon);
+      }
+      if(!editIcon) {
+        editIcon = document.createElement("div");
+        editIcon.className = "icon edit-icon";
+        editIcon.innerHTML = "✏️";
+        editIcon.addEventListener("click", (e) => {
+          if(zPressed && mode === "place") {
+            // Enter edit mode for existing content
+            enterEditMode(false);
+          }
+          e.stopPropagation();
+        });
+        contentBox.appendChild(editIcon);
+      }
+      deleteIcon.style.display = "flex";
+      editIcon.style.display = "flex";
+    }
+    function removeZIcons() {
+      if(deleteIcon) deleteIcon.style.display = "none";
+      if(editIcon) editIcon.style.display = "none";
+    }
+    
+    // Enter edit mode.
+    // newBox: true means we are creating a new box, false means editing an existing box.
+    function enterEditMode(newBox) {
+      mode = "edit";
+      // For a new box, create one at the clicked spot
+      if(newBox) {
+        if(contentBox) container.removeChild(contentBox);
+        contentBox = document.createElement("div");
+        contentBox.className = "content-box";
+        contentBox.style.position = "absolute";
+        container.appendChild(contentBox);
+      }
+      // Replace content with a contenteditable div
+      contentBox.innerHTML = "";
+      const inputDiv = document.createElement("div");
+      inputDiv.className = "edit-input";
+      inputDiv.contentEditable = true;
+      inputDiv.focus();
+      contentBox.appendChild(inputDiv);
+      
+      // Listen for keydown within the editable div.
+      inputDiv.addEventListener("keydown", function(e) {
+        // For new boxes, press Enter (without shift) to save.
+        if(newBox && e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          finishEditMode(inputDiv.innerHTML);
+        }
+        // For editing existing boxes, use Shift+Enter to save.
+        else if(!newBox && e.key === "Enter" && e.shiftKey) {
+          e.preventDefault();
+          finishEditMode(inputDiv.innerHTML);
+        }
+      });
+    }
+    
+    // Finish edit mode, set content and return to place mode.
+    function finishEditMode(content) {
+      contentBox.innerHTML = content;
+      mode = "place";
+      saveState();
+    }
+    
+    // Resize: when x is held, show a resize handle at bottom-right.
+    let resizeHandle = null;
+    function showResizeHandle() {
+      if(!contentBox) return;
+      if(!resizeHandle) {
+        resizeHandle = document.createElement("div");
+        resizeHandle.className = "resize-handle";
+        contentBox.appendChild(resizeHandle);
+        resizeHandle.addEventListener("mousedown", (e) => {
+          if(xPressed && mode === "place") {
+            isResizing = true;
+            e.stopPropagation();
+          }
+        });
+      }
+      resizeHandle.style.display = "block";
+    }
+    function hideResizeHandle() {
+      if(resizeHandle) resizeHandle.style.display = "none";
+    }
+    document.addEventListener("mousemove", (e) => {
+      if(isResizing && mode === "place" && contentBox) {
+        const boxRect = contentBox.getBoundingClientRect();
+        // Calculate new dimensions based on mouse position relative to the box’s top-left
+        const newWidth = e.clientX - boxRect.left;
+        const newHeight = e.clientY - boxRect.top;
+        contentBox.style.width = newWidth + "px";
+        contentBox.style.height = newHeight + "px";
+      }
+    });
+    document.addEventListener("mouseup", () => {
+      if(isResizing) {
+        isResizing = false;
+        saveState();
+      }
+    });
+    
+    // Text slider: when holding 'a' and text is selected, spawn a slider at the top.
+    function showTextSlider() {
+      if(!contentBox) return;
+      if(!textSlider) {
+        textSlider = document.createElement("input");
+        textSlider.type = "range";
+        textSlider.min = 10;
+        textSlider.max = 100;
+        textSlider.value = 16; // default font size
+        textSlider.className = "text-slider";
+        textSlider.addEventListener("input", () => {
+          contentBox.style.fontSize = textSlider.value + "px";
+        });
+        contentBox.appendChild(textSlider);
+      }
+      textSlider.style.display = "block";
+    }
+    function hideTextSlider() {
+      if(textSlider) textSlider.style.display = "none";
+    }
+    
+    // Global key events to track modifiers and trigger UI features.
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Shift") shiftPressed = true;
+      if(e.key.toLowerCase() === "z") {
+        zPressed = true;
+        if(mode === "place" && contentBox) showZIcons();
+      }
+      if(e.key.toLowerCase() === "x") {
+        xPressed = true;
+        if(mode === "place" && contentBox) showResizeHandle();
+      }
+      if(e.key.toLowerCase() === "a") {
+        aPressed = true;
+        // If text is selected inside contentBox, show the slider.
+        if(mode === "place" && contentBox) {
+          const selection = window.getSelection();
+          if(selection && selection.toString().length > 0) {
+            showTextSlider();
+          }
+        }
+      }
+      // For resize or text slider modes, pressing Enter saves state.
+      if(e.key === "Enter") {
+        if(xPressed && mode === "place") {
+          hideResizeHandle();
+          saveState();
+        }
+        if(aPressed && mode === "place") {
+          hideTextSlider();
+          saveState();
+        }
+      }
+    });
+    
+    document.addEventListener("keyup", (e) => {
+      if(e.key === "Shift") shiftPressed = false;
+      if(e.key.toLowerCase() === "z") {
+        zPressed = false;
+        removeZIcons();
+      }
+      if(e.key.toLowerCase() === "x") {
+        xPressed = false;
+        hideResizeHandle();
+      }
+      if(e.key.toLowerCase() === "a") {
+        aPressed = false;
+        hideTextSlider();
+      }
+    });
+    
+    // In place mode: holding Shift and clicking inside the container starts edit mode.
+    container.addEventListener("click", (e) => {
+      // Only respond if in place mode and shift is held
+      if(mode === "place" && shiftPressed) {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        // For a new box, create it at the click position.
+        enterEditMode(true);
+        contentBox.style.left = x + "px";
+        contentBox.style.top = y + "px";
+      }
+    });
+    
+    // Ensure the initial mode is place.
+    mode = "place";
+  </script>
+</body>
+</html>

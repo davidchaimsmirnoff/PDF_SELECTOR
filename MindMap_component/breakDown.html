@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Interactive Editable Area</title>
+<style>
+    body, html { height: 100%; margin: 0; font-family: Arial, sans-serif; }
+    #container { border: 3px solid black; position: relative; height: 90%; margin: 5%; }
+    .input-box { position: absolute; display: none; border: 1px solid #ccc; padding: 5px; }
+    .edit-buttons { position: absolute; top: 0; right: 0; display: none; }
+    .edit-button { padding: 5px; cursor: pointer; }
+    .delete-button { background-color: red; }
+    .edit-button { background-color: green; }
+</style>
+</head>
+<body>
+<div id="container" onclick="placeInputBox(event)"></div>
+
+<script>
+    let currentInput = null;
+    const container = document.getElementById('container');
+
+    function placeInputBox(event) {
+        if (!event.shiftKey) return;
+        const x = event.clientX;
+        const y = event.clientY;
+
+        if (currentInput) {
+            currentInput.remove();
+        }
+
+        currentInput = document.createElement('textarea');
+        currentInput.style.position = 'absolute';
+        currentInput.style.left = `${x}px`;
+        currentInput.style.top = `${y}px`;
+        currentInput.classList.add('input-box');
+        currentInput.onkeydown = handleEnter;
+        container.appendChild(currentInput);
+        currentInput.style.display = 'block';
+        currentInput.focus();
+    }
+
+    function handleEnter(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            currentInput.readOnly = true;
+            currentInput.style.resize = 'both';
+            currentInput.style.overflow = 'auto';
+            addControlButtons();
+        }
+    }
+
+    function addControlButtons() {
+        const editButtons = document.createElement('div');
+        editButtons.classList.add('edit-buttons');
+
+        const deleteBtn = document.createElement('div');
+        deleteBtn.classList.add('edit-button', 'delete-button');
+        deleteBtn.textContent = '🗑️';
+        deleteBtn.onclick = () => currentInput.remove();
+
+        const editBtn = document.createElement('div');
+        editBtn.classList.add('edit-button');
+        editBtn.textContent = '✏️';
+        editBtn.onclick = () => {
+            currentInput.readOnly = false;
+            currentInput.focus();
+        };
+
+        editButtons.appendChild(deleteBtn);
+        editButtons.appendChild(editBtn);
+        currentInput.appendChild(editButtons);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'z') {
+                editButtons.style.display = 'block';
+            }
+        });
+
+        document.addEventListener('keyup', (event) => {
+            if (event.key === 'z') {
+                editButtons.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

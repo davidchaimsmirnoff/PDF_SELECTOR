@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Content Editor</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    margin: 0; /* Remove default body margin */
+}
+
+#wrapper {
+    width: 500px;
+    height: 700px;
+    position: relative; /* Keep as relative */
+    border: 1px solid #000; /* Just to see the boundary, optional */
+    overflow: visible;
+}
+
+.drag-handle-top, .drag-handle-bottom {
+    width: 100%;
+    height: 10px;
+    background: gray;
+    cursor: grab;
+    position: absolute;
+    left: 0;
+}
+
+.drag-handle-top {
+    top: 0;
+    border-radius: 5px 5px 0 0;
+}
+
+.drag-handle-bottom {
+    bottom: 0;
+    border-radius: 0 0 5px 5px;
+}
+
+        
+.tooltip {
+    position: absolute; /* This makes the tooltip relative to the wrapper */
+    z-index: 1000;
+    width: auto;
+    max-width: 80%;
+    padding: 5px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    visibility: hidden;
+    transition: visibility 0.2s linear;
+}
+
+
+        #content, textarea {
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+    white-space: pre-wrap;
+    cursor: pointer;
+    border: 1px solid #000;
+    padding: 10px;
+    box-sizing: border-box;
+    outline: none; /* Removes the focus border */
+
+
+
+}
+
+#content {
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+    white-space: pre-wrap;
+    cursor: pointer;
+    border: 1px solid #000;
+    padding: 10px;
+    box-sizing: border-box;
+    outline: none; /* Removes the focus border */
+    overflow-y: auto; /* Adds vertical scrollbar if content overflows */
+}
+
+
+
+/* Make the textarea border bold only when editing */
+textarea {
+    border: 3px solid black;
+    resize: none;
+}
+
+.resize-handle {
+    width: 10px;
+    height: 10px;
+    background-color: gray;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+}
+.drag-handle {
+    width: 100%;
+    height: 8px;
+    background: gray;
+    cursor: grab;
+    text-align: center;
+    color: white;
+    font-size: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+
+.edit-mode {
+    border: 3px solid black !important; /* Bold when editing */
+}
+
+
+
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+        <p id="content">Loading...</p>
+
+
+
+        <div id="tooltip" class="tooltip">
+            <div class="drag-handle-top"></div> <!-- Drag from top -->
+            <textarea></textarea>
+            <div class="resize-handle"></div> <!-- Resize handle -->
+            <div class="drag-handle-bottom"></div> <!-- Drag from bottom -->
+        </div>
+
+        <div id="tooltip" class="tooltip">
+            <div class="drag-handle">⋮</div>
+            <textarea></textarea>
+            <div class="resize-handle"></div> <!-- Resize handle -->
+        </div>
+
+
+
+    <script>
+
+const dragHandles = document.querySelectorAll(".drag-handle-top, .drag-handle-bottom");
+let isDragging = false, offsetX, offsetY;
+
+        const tooltip = document.getElementById("tooltip");
+        const resizeHandle = document.querySelector(".resize-handle");
+        let isResizing = false;
+        let startX, startY, startWidth, startHeight, startLeft, startTop;
+
+        const socket = io();
+        const wrapper = document.getElementById("wrapper");
+        let isEditing = false;
+
+        // Fetch content on page load
+        fetch("/content")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("content").textContent = data.content;
+            });
+           
+           
+           
+     document.addEventListener("keydown", function (event) {
+    if (event.shiftKey && event.key === "Enter") {
+        event.preventDefault();
+
+        if (!isEditing) {
+            const p = document.getElementById("content");
+            const textarea = document.createElement("textarea");
+            textarea.value = p.textContent;
+            textarea.id = "content";
+            
+            wrapper.replaceChild(textarea, p);
+            wrapper.classList.add("edit-mode"); // 🔥 Add bold border
+
+            // 🔥 Force focus on textarea
+            setTimeout(() => {
+                textarea.focus();
+            }, 10);
+
+            // Save on Shift + Enter inside textarea
+            textarea.addEventListener("keydown", function (e) {
+                if (e.shiftKey && e.key === "Enter") {
+                    e.preventDefault();
+                    saveContent(textarea.value);
+                }
+            });
+
+            isEditing = true;
+        }
+    }
+});
+
+// Enable resizing
+resizeHandle.addEventListener("mousedown", function (e) {
+    e.preventDefault();
+    isResizing = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startWidth = tooltip.offsetWidth;
+    startHeight = tooltip.offsetHeight;
+    startLeft = tooltip.offsetLeft;
+    startTop = tooltip.offsetTop;
+
+    document.addEventListener("mousemove", handleResize);
+    document.addEventListener("mouseup", stopResize);
+});
+
+
+function handleResize(e) {
+    if (!isResizing) return;
+
+    let newWidth = startWidth + (e.clientX - startX);
+    let newHeight = startHeight + (e.clientY - startY);
+
+    tooltip.style.width = `${newWidth}px`;
+    tooltip.style.height = `${newHeight}px`;
+}
+
+function stopResize() {
+    isResizing = false;
+    document.removeEventListener("mousemove", handleResize);
+    document.removeEventListener("mouseup", stopResize);
+
+    // Save new size to JSON
+    saveTooltipSizeAndPosition();
+}
+
+// Enable dragging from top or bottom
+dragHandles.forEach(handle => {
+    handle.addEventListener("mousedown", function (e) {
+        e.preventDefault();
+        isDragging = true;
+        offsetX = e.clientX - tooltip.offsetLeft;
+        offsetY = e.clientY - tooltip.offsetTop;
+
+        document.addEventListener("mousemove", handleDrag);
+        document.addEventListener("mouseup", stopDrag);
+    });
+});
+
+function handleDrag(e) {
+    if (!isDragging) return;
+
+    tooltip.style.left = `${e.clientX - offsetX}px`;
+    tooltip.style.top = `${e.clientY - offsetY}px`;
+}
+
+function stopDrag() {
+    isDragging = false;
+    document.removeEventListener("mousemove", handleDrag);
+    document.removeEventListener("mouseup", stopDrag);
+
+        // Save the new position
+        saveTooltipSizeAndPosition();
+}
+
+function saveContent(newText) {
+    fetch("/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: newText }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("✅ Content saved:", data.message);
+    });
+
+    // Convert textarea back to <p>
+    const newP = document.createElement("p");
+    newP.textContent = newText;
+    newP.id = "content";
+    
+    wrapper.replaceChild(newP, document.getElementById("content"));
+
+    // 🔥 Remove bold border and focus
+    wrapper.classList.remove("edit-mode");
+    newP.blur(); // 🔥 Explicitly remove focus
+
+    // 🔥 Reset `isEditing` to false AFTER DOM updates
+    setTimeout(() => {
+        isEditing = false;
+    }, 50);
+}
+
+
+
+function saveTooltipSizeAndPosition() {
+    const selection = lastSelectedText;
+    if (!selection) return;
+
+    const tooltipData = {
+        left: parseInt(tooltip.style.left, 10),
+        top: parseInt(tooltip.style.top, 10),
+        width: parseInt(tooltip.style.width, 10),
+        height: parseInt(tooltip.style.height, 10),
+        content: tooltip.querySelector("textarea").value.trim()
+    };
+
+    fetch("/save-tooltip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ selectedText: selection, tooltipData })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("✅ Tooltip position & size saved:", data.message);
+    })
+    .catch(error => {
+        console.error("❌ Failed to save tooltip position & size:", error);
+    });
+}
+
+
+
+let lastSelectedText = ""; // Store last selected text
+
+document.addEventListener("keydown", function(event) {
+    if (event.shiftKey && event.code === "Space") {
+        event.preventDefault();
+        let selection = window.getSelection().toString().trim();
+
+        // If there's a new selection, store it
+        if (selection) {
+            lastSelectedText = selection;
+        }
+
+        // If no selection is detected, try using the last stored selection
+        if (!lastSelectedText) {
+            console.warn("⚠️ No text selected, ignoring Shift + Space.");
+            return;
+        }
+
+        const tooltip = document.getElementById("tooltip");
+        const textarea = tooltip.querySelector("textarea");
+
+        if (tooltip.style.visibility === "visible") {
+            console.log("📝 Saving tooltip content for:", lastSelectedText);
+
+            // Save tooltip data before closing
+            const tooltipData = {
+                left: parseInt(tooltip.style.left, 10),
+                top: parseInt(tooltip.style.top, 10),
+                width: tooltip.offsetWidth,
+                height: tooltip.offsetHeight,
+                content: textarea.value.trim()
+            };
+
+            fetch("/save-tooltip", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ selectedText: lastSelectedText, tooltipData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("✅ Tooltip saved:", data.message);
+            })
+            .catch(error => {
+                console.error("❌ Failed to save tooltip:", error);
+            });
+
+            tooltip.style.visibility = "hidden";
+            console.log("🚪 Tooltip closed.");
+        } else {
+            console.log("📌 Opening tooltip for:", lastSelectedText);
+            loadTooltip(lastSelectedText); // Show tooltip for last selected text
+        }
+    }
+});
+
+async function loadTooltip(selectedText) {
+    try {
+        console.log("🔍 Fetching tooltip for:", selectedText);
+
+        const response = await fetch(`/tooltip-content?text=${encodeURIComponent(selectedText)}`);
+        if (!response.ok) {
+            throw new Error("Failed to load tooltip content");
+        }
+        const data = await response.json();
+        
+        console.log("📥 Tooltip data received:", data);
+
+        if (!data.content) {
+            console.warn("⚠️ No content found for selection, using default.");
+            data.content = "Edit me...";
+        }
+
+        // Restore tooltip position and size
+        tooltip.style.left = `${data.left}px`;
+        tooltip.style.top = `${data.top}px`;
+        tooltip.style.width = `${data.width}px`;
+        tooltip.style.height = `${data.height}px`;
+        tooltip.querySelector("textarea").value = data.content;
+
+        tooltip.style.visibility = "visible"; // Show tooltip
+    } catch (error) {
+        console.error("❌ Failed to load tooltip content:", error);
+    }
+}
+
+        socket.on("content-updated", (newText) => {
+            if (!isEditing) {
+                document.getElementById("content").textContent = newText;
+            }s
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hebrew Morphological Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-size: 18px;
+            direction: rtl;
+            line-height: 1.5;
+            padding: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 14px;
+            visibility: hidden;
+            white-space: nowrap;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Hebrew Morphological Analyzer</h2>
+    <textarea id="hebrewText">
+דעת ותבונה :פתיחה ראשונה : ישמע השומע ויבין המשכיל את אשר חכמים הגידו...
+    </textarea>
+    <button onclick="analyzeText()">Analyze</button>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <script>
+        const hebrewDictionary = {
+            "דעת": { root: "ידע (Y-D-A)", type: "Noun (Knowledge)" },
+            "ותבונה": { root: "בין (B-Y-N)", type: "Noun (Understanding)" },
+            "פתיחה": { root: "פתח (P-T-Ch)", type: "Noun (Opening)" },
+            "ראשונה": { root: "ראש (R-OSH)", type: "Adjective (First)" },
+            "ישמע": { root: "שמע (Sh-M-A)", type: "Verb (Future Tense - He will hear)" },
+            "השומע": { root: "שמע (Sh-M-A)", type: "Noun/Adjective (The one who hears)" },
+            "ויבין": { root: "בין (B-Y-N)", type: "Verb (Future Tense - He will understand)" },
+            "המשכיל": { root: "שכל (S-Ch-L)", type: "Noun (The wise person)" },
+            "את": { root: "N/A", type: "Preposition (Direct Object Marker)" },
+            "אשר": { root: "N/A", type: "Conjunction (That, Which)" },
+            "חכמים": { root: "חכם (Ch-K-M)", type: "Noun (Wise people, Plural)" },
+            "הגידו": { root: "נגד (N-G-D)", type: "Verb (Past Tense - They told)" }
+        };
+
+        function analyzeText() {
+            const textarea = document.getElementById("hebrewText");
+            textarea.addEventListener("dblclick", showTooltip);
+            document.addEventListener("click", hideTooltip, true);
+        }
+
+        function showTooltip(event) {
+            const textarea = document.getElementById("hebrewText");
+            const tooltip = document.getElementById("tooltip");
+
+            let selectedText = window.getSelection().toString().trim();
+            if (!selectedText) return;
+
+            let analysis = hebrewDictionary[selectedText] || { root: "Not Found", type: "Unknown" };
+            tooltip.innerHTML = `<strong>${selectedText}</strong><br>Root: ${analysis.root}<br>Type: ${analysis.type}`;
+
+            // Get cursor position inside textarea
+            let rect = textarea.getBoundingClientRect();
+            let cursorX = event.clientX;
+            let cursorY = event.clientY;
+
+            // Position tooltip above the clicked word
+            tooltip.style.left = `${cursorX}px`;
+            tooltip.style.top = `${cursorY - 40}px`; // Move slightly above
+            tooltip.style.visibility = "visible";
+        }
+
+        function hideTooltip(event) {
+            const tooltip = document.getElementById("tooltip");
+            const textarea = document.getElementById("hebrewText");
+
+            // If clicking inside the textarea, don't hide the tooltip
+            if (event.target === textarea) return;
+
+            tooltip.style.visibility = "hidden";
+        }
+    </script>
+
+</body>
+</html>
