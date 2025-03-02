@@ -50,7 +50,7 @@
 
 
 <details>
-  <summary><strong>Compatibility</strong></summary>
+  <summary><strong>🌍Compatibility</strong></summary>
 
 ### Browsers That Pick Up PDF Text Streams on Selecting Text:
 - **Chrome**  
@@ -70,7 +70,7 @@
 
 
 <details> 
-   <summary><strong>Prerequisites and Requirements 🛠️ </strong></summary>
+   <summary><strong>🛠️ Prerequisites and Requirements  </strong></summary>
 
 **To use this tool, make sure you have the following installed:**
 
@@ -88,7 +88,7 @@
 </details>
 
 <details>
- <summary><strong>User Guide - Instructions & Getting Started 🚀 </strong></summary>
+ <summary><strong>🚀 User Guide - Instructions & Getting Started  </strong></summary>
 
 
 **To run the program, clone the repository and start the local server using:**
@@ -139,6 +139,23 @@
 
 ![Alt text](images/Dragable.png)
 
+**You can also Drag the note when toggleing the note to show up by holding shift and pressing enter and when you toggle it to show up next time it will be aproximatly in the same spot you left it after you hit toggle save onto the selected text.** 
+</details>
+
+
+<details>
+<summary> <strong> 💡 Example Prompt For ChatGPT and AI </strong></summary>
+ 
+**Happy Editing and Happy Translating!**
+
+**Example prompt for interlinear translation of final edited text using ChatGPT**
+
+<p style="border: 3px solid black; display: inline-block;">
+    <img src="images/TranslationWithChatGPT.png" alt="Image Description">
+</p>
+
 
 </details>
+
+
 
