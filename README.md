@@ -99,7 +99,7 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 ![Alt text](images/EditMode.png) 
 
 
-**Holding shift and pressing enter again will toggle the editor into preview mode where it is easy to view the over all text**
+**Holding shift and pressing enter again will toggle the editor into preview mode where it is easy to view the over all text. Text selection and copy is also available **
 
 ![Alt text](images/SaveMode.png) 
 
