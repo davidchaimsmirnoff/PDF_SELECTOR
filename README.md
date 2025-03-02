@@ -118,7 +118,7 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
 **Because if you leave nothing in the box and toggle save by togglling into Preview mode by holding shift and pressing enter and you then refresh the page all the text you deleted will come right back because the program does not support replacing the previous text with empty space. If you want to clear and start from new you have to at least leave a single character. Later you can delete it though by replaceing it with more text or what ever you want.** 
 
-**So to test you loading your PDF Selections into the browser app. Open your pdf, run `python Selector.py`, select some text, press enter and that should load the selected text into the browser app when you press refreash** 
+**So to test uploading your PDF Selections into the browser app. Open your pdf, run `python Selector.py`, select some text, press enter and that should load the selected text into the browser app and you should see the text inside the input section/box after you press refreash** 
 
 ![Alt text](images/Presentation.png)
 
