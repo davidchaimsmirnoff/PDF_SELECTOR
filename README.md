@@ -50,7 +50,9 @@
 
 
 <details>
-  <summary><strong>🌍Compatibility</strong></summary>
+  <summary><strong>🌍 Compatibility</strong></summary>
+
+  **Works Cross Platform for both Windows & Apple Mac**
 
 ### Browsers That Pick Up PDF Text Streams on Selecting Text:
 - **Chrome**  
