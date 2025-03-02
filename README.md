@@ -10,26 +10,33 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
 **Additionally, the extracted text can be seamlessly transferred into translation models or LLMs such as ChatGPT, Claude, or Perplexity AI for interlinear translation or further processing. This tool is particularly valuable for researchers, students, and professionals working with historical manuscripts or multilingual texts.**
 
+<p align="center">
+  <img src="images/NotesPreview.png" alt="Notes Preview">
+</p>
+
 ![Alt text](images/Middle.png)
+
+
+
 
 <details>
   <summary><strong> Getting to Know This Project 🔍 </strong></summary>
 
-From what it seems, most PDF viewers have an ability to pick up ASCII text from PDF Documents. It seems even most can pick up the famous and illustrious **Rashi script** from PDFs as well, as shown in the picture below.
+PDF viewers especially like the ones in Chrome and Brave have an ability to pick up ASCII text from PDF Documents. They can even roughly and pretty accurately here and there pick up even the famous and illustrious **Rashi script** from PDFs as well, as shown in the picture below.
 
 ![Alt text](images/ref1.jpeg)
 
 Select any of the words from the PDF document, and you will see the text registered in the selection space, as shown in the picture above.
 
-Now, this application allows you, once you have selected the text, to press **Enter** on any selection, and it will automatically add the word into an **interactive HTML editor**, as seen in the image below.
+Now, this application allows you, once you have selected the text, to press **Enter** on any selection, and it will automatically add the word into an **interactive HTML editor**, as seen in the image below. You can then select, view, cut, copy, paste, add, and delete text and even save notes on selected words and retrieve the same notes upon selecting the same word again and pressing the key combination.
 
 ![Alt text](images/EditMode.png)
 
 **Summary**
 
-Overall this allows for **easy editing** and is great for **rendering old manuscripts into selectable form**. (Meaning, in order to copy or paste the text later if needed, or to send the overall text into any **translation model or LLM** like ChatGPT, Claude, or Perplexity AI that supports interlinear translation.) 
+Overall this allows for **easy editing** and is great for **rendering old manuscripts into selectable form**. (Meaning, in order to copy or paste the text later if needed into another application, or to send the overall text into any **translation model or LLM** like ChatGPT, Claude, or Perplexity AI that supports interlinear translation.) 
 
-This is a very useful application because it allows for **quick text modifications** using the program and saves the output into a **persistent file on the system**.
+This is a very useful middle man in-between like application because it allows for **quick text modifications** using the program and saves the output into a **persistent file on the system** also upon save.
 
 </details>
 
@@ -99,9 +106,23 @@ This is a very useful application because it allows for **quick text modificatio
 ![Alt text](images/SaveMode.png) 
 
 
+Now once the program is running on the web browser run `python Selector.py` in your Terminal/ClientShell of choice as in the picture bellow.
+
+![Alt text](images/RunningPython.png)
 
 
+You can now go and start selecting text from your pdfs of choice and press enter and it will add the text into the web application.
 
+![Alt text](images/ref3.png)
+
+To make things easier first clear the existing text by first pressing shift enter to toggle into edit mode and replace the existing text for now with just a single character as in the picture bellow. 
+![Alt text](images/PreviewSelectMode.png)
+
+Because if you leave nothing in the box and toggle save by togglling into Preview mode by holding shift and pressing enter and you then refresh the page all the text you deleted will come right back because the program does not support replace the previous text with empty space. If you want to clear and start from new you have to leave a single character. Later you can delete it though. 
+
+So to test you loading your PDF Selections into the browser app. Open your pdf, run `python Selector.py`, select some text, press enter and that should load the selected text into the browser app when you press refreash 
+
+![Alt text](images/Presentation.png)
 
 
 
