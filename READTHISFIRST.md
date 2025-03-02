@@ -1,24 +1,48 @@
 Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
+## **Abstract**
+This project is a PDF text selection tool that takes advantage of browser-based PDF viewers to extract, edit, and manipulate text. Modern web browsers can recognize ASCII text and even roughly pick up specialized scripts like Rashi script in PDFs. This application builds on that capability, allowing users to select text, automatically insert it into an interactive HTML editor, and make quick modifications.
 
-**Introduction**
+Additionally, the extracted text can be seamlessly transferred into translation models or LLMs such as ChatGPT, Claude, or Perplexity AI for interlinear translation or further processing. This tool is particularly valuable for researchers, students, and professionals working with historical manuscripts or multilingual texts.
 
-From what it seems, most pdf viewers have an abillity to pick up ASCII text from PDF Documents it seems even most can even pick up the famous and illustrious Rashi script from PDF documents as well.
+
+<details>
+  <summary><strong> Getting to Know This Project 🔍 </strong></summary>
+
+From what it seems, most PDF viewers have an ability to pick up ASCII text from PDF Documents. It seems even most can pick up the famous and illustrious **Rashi script** from PDFs as well, as shown in the picture below.
 
 ![Alt text](images/ref1.jpeg)
 
+Select any of the words from the PDF document, and you will see the text registered in the selection space, as shown in the picture above.
 
-Select any of the words from the pdf doc and there you will see the text registered in the selection space as in the picture above. 
-
-Now this application allows you once you have selected the text to press enter on any selection and it will add it automaticaly add the word into an interactive editor made in HTML as in the picture below. 
-
+Now, this application allows you, once you have selected the text, to press **Enter** on any selection, and it will automatically add the word into an **interactive HTML editor**, as seen in the image below.
 
 ![Alt text](images/EditMode.png)
 
 **Summary**
 
-This allows for easy editing and is great for rendering old manuscripts into selectable form.(Meaning, in order to copy or paste the text later if needed or if needed to send the over all text into any translation model or LLM like Chat GPT, Claude, or Perplexity AI that will support and make an Interlinear Translation)
+Overall this allows for **easy editing** and is great for **rendering old manuscripts into selectable form**. (Meaning, in order to copy or paste the text later if needed, or to send the overall text into any **translation model or LLM** like ChatGPT, Claude, or Perplexity AI that supports interlinear translation.) 
 
-This is very cool application because it allows you to make quick edits using the program and save it into a persistant file that is on the system computer. 
+This is a very useful application because it allows for **quick text modifications** using the program and saves the output into a **persistent file on the system**.
 
-Tou
+</details>
+
+<details> 
+   <summary><strong>Prerequisites and Requirements 🛠️ </strong></summary>
+
+NodeJS and Python should be installed on your computer. To install Node.js and Python, follow these links:
+
+- [Download Node.js](https://nodejs.org/)
+- [Download Python](https://www.python.org/)
+
+</details>
+
+<details>
+ <summary><strong>User Guide - Instructions & Getting Started 🚀 </strong></summary>
+
+**Tutorial** 
+
+To run the program, clone the repository and start the local server using:
+
+```sh
+node server.js
