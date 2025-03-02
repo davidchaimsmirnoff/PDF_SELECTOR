@@ -13,7 +13,7 @@
   - **Select text from PDFs.**
   - **Automatically insert it into an interactive HTML editor.**
   - **Make quick modifications for further use.**
-  - **Seamlessly transfer extracted text into translation models or Large Language Models (LLMs) such as ChatGPT, Claude, or Perplexity AI for interlinear translation or additional processing.**
+  - **Allow for Seamless transfer extracted text into translation models or Large Language Models (LLMs) such as ChatGPT, Claude, or Perplexity AI for interlinear translation or additional processing.**
   - **This tool is particularly useful for researchers, students, and professionals working with historical manuscripts or multilingual texts, especially in Hebrew.**
 
 <p align="center">
