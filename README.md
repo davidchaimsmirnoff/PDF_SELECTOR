@@ -116,7 +116,7 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 **To make things easier first clear the existing text by first pressing shift enter to toggle into edit mode and replace the existing text for now with just a single character as in the picture bellow.** 
 ![Alt text](images/PreviewSelectMode.png)
 
-**Because if you leave nothing in the box and toggle save by togglling into Preview mode by holding shift and pressing enter and you then refresh the page all the text you deleted will come right back because the program does not support replace the previous text with empty space. If you want to clear and start from new you have to leave a single character. Later you can delete it though.** 
+**Because if you leave nothing in the box and toggle save by togglling into Preview mode by holding shift and pressing enter and you then refresh the page all the text you deleted will come right back because the program does not support replacing the previous text with empty space. If you want to clear and start from new you have to leave a single character. Later you can delete it though.** 
 
 **So to test you loading your PDF Selections into the browser app. Open your pdf, run `python Selector.py`, select some text, press enter and that should load the selected text into the browser app when you press refreash** 
 
