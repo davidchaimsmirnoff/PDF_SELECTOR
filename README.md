@@ -7,17 +7,14 @@
 ![Alt text](images/Selector_Listening.png)
 
 
-  <summary>
-      <strong>📖 About This Project</strong>
-  </summary>
-  
+ ## 📜 About This Project
 **This project is a PDF text selection tool that enhances the browser-based PDF viewing experience and allows users to also extract, edit, and process text. Popular web browsers like Chrome, Brave, and Microsoft Edge can recognize ASCII text and even roughly detect specialized scripts like Rashi script in PDFs. This application builds on that capability, allowing users to:**
 
-- **Select text from PDFs.**
-- **Automatically insert it into an interactive HTML editor.**
-- **Make quick modifications for further use.**
-- **Seamlessly transfer extracted text into translation models or Large Language Models (LLMs) such as ChatGPT, Claude, or Perplexity AI for interlinear translation or additional processing.**
-- **This tool is particularly useful for researchers, students, and professionals working with historical manuscripts or multilingual texts, especially in Hebrew.**
+  - **Select text from PDFs.**
+  - **Automatically insert it into an interactive HTML editor.**
+  - **Make quick modifications for further use.**
+  - **Seamlessly transfer extracted text into translation models or Large Language Models (LLMs) such as ChatGPT, Claude, or Perplexity AI for interlinear translation or additional processing.**
+  - **This tool is particularly useful for researchers, students, and professionals working with historical manuscripts or multilingual texts, especially in Hebrew.**
 
 <p align="center">
   <img src="images/NotesPreview.png" alt="Notes Preview">
