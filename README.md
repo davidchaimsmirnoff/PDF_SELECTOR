@@ -1,6 +1,6 @@
 Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
-## **PDF Selections UPLOAD Editor**
+## **PDF SELECTOR**
 ![Alt text](images/PDF_EDITOR.png)
 
 
