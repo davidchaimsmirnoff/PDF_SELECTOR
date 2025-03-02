@@ -1,10 +1,16 @@
 Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
 ## **Abstract**
-This project is a PDF text selection tool that takes advantage of browser-based PDF viewers to extract, edit, and manipulate text. Modern web browsers can recognize ASCII text and even roughly pick up specialized scripts like Rashi script in PDFs. This application builds on that capability, allowing users to select text, automatically insert it into an interactive HTML editor, and make quick modifications.
+![Alt text](images/PDF_EDITOR.png)
 
-Additionally, the extracted text can be seamlessly transferred into translation models or LLMs such as ChatGPT, Claude, or Perplexity AI for interlinear translation or further processing. This tool is particularly valuable for researchers, students, and professionals working with historical manuscripts or multilingual texts.
 
+![Alt text](images/Selector_Listening.png)
+
+**This project is a PDF text selection tool that takes advantage of browser-based PDF viewers to extract, edit, and manipulate text. Modern web browsers can recognize ASCII text and even roughly pick up specialized scripts like Rashi script in PDFs. This application builds on that capability, allowing users to select text, automatically insert it into an interactive HTML editor, and make quick modifications.**
+
+**Additionally, the extracted text can be seamlessly transferred into translation models or LLMs such as ChatGPT, Claude, or Perplexity AI for interlinear translation or further processing. This tool is particularly valuable for researchers, students, and professionals working with historical manuscripts or multilingual texts.**
+
+![Alt text](images/Middle.png)
 
 <details>
   <summary><strong> Getting to Know This Project 🔍 </strong></summary>
@@ -26,6 +32,11 @@ Overall this allows for **easy editing** and is great for **rendering old manusc
 This is a very useful application because it allows for **quick text modifications** using the program and saves the output into a **persistent file on the system**.
 
 </details>
+
+
+
+
+
 <details> 
    <summary><strong>Prerequisites and Requirements 🛠️ </strong></summary>
 
