@@ -66,13 +66,13 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
 **To use this tool, make sure you have the following installed:**
 
-✅ **A Browser with PDF Viewing Capabilities** – The program should recognize any browser-based PDF viewer.  
+✅ **A Browser with PDF Viewing Capabilities** – The program should recognize any browser-based PDF viewer that picks up PDF TEXT STREAMS ON SELECT.  
    **Recommended:** [Google Chrome](https://www.google.com/chrome/) or [Brave Browser](https://brave.com/download/)) for best compatibility.  
 
 ✅ **Node.js** – Required for running the backend.  
    📥 [Download Node.js](https://nodejs.org/)  
 
-✅ **Python** – Required for additional processing.  
+✅ **Python** – Required for uploading selections into the browser app via "Enter" keyboard/shortcut binding.  
    📥 [Download Python](https://www.python.org/)  
 
 ✅ **A PDF Document** – A PDF file containing selectable text to test the application's functionality.
