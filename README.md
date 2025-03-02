@@ -32,7 +32,6 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
 ![Alt text](images/EditMode.png)
 
-**Summary**
 
 **Overall this allows for **easy editing** and is great for **rendering old manuscripts into selectable form**. (Meaning, in order to copy or paste the text later if needed into another application, or to send the overall text into any large translation model or large language model like ChatGPT, Claude, or Perplexity AI that supports interlinear translation.)**
 
