@@ -113,7 +113,7 @@
 ![Alt text](images/SaveMode.png) 
 
 
-**Now once the program is running on the web browser run `python Selector.py` in your Terminal/ClientShell of choice as in the picture bellow.**
+**Now once the program is running on the web browser run `python Selector.py` for Windows and `sudo python3 SelectorAppleDevice.py` if your on Apple Mac in your Terminal/ClientShell of choice as in the picture bellow.**
 
 ![Alt text](images/RunningPython.png)
 
