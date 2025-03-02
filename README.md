@@ -20,7 +20,7 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
 
 <details>
-  <summary><strong> Getting to Know This Project 🔍 </strong></summary>
+  <summary><strong> Getting to Know The Project 🔍 </strong></summary>
 
 **PDF viewers especially like the ones in Chrome and Brave have an ability to pick up ASCII text from PDF Documents. They can even roughly and pretty accurately here and there pick up even the famous and illustrious **Rashi script** from PDFs as well and by defualt convert it into Ashuri Script/Standard ASCII , as shown in the picture below.**
 
