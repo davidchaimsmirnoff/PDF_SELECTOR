@@ -34,7 +34,24 @@ This is a very useful application because it allows for **quick text modificatio
 </details>
 
 
+<details> 
+<summary>Compatabillity </summary>
 
+BROWSERS THAT PICK UP PDF TEXT STREAMS ON SELECTING TEXT
+CHROME 
+BRAVE
+MICROSOFT EDGE 
+
+BROWSERS THAT THE PDF SELECTOR WILL ACCEPT 
+CHROME
+BRAVE 
+MICROSOFT EDGE - TEXT IS REVERSED
+
+RECOMENDED FOR USE 
+CHROME OR BRAVE
+
+
+</details>
 
 
 <details> 
