@@ -95,7 +95,7 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
 ![Alt text](images/WriteLocalHostonWeb.png) 
 
-**Holding down shift and pressing Enter will toggle the editor in Edit Mode where you can copy, paste, write, and delete the text inside the editor.**
+**Holding down shift and pressing Enter will toggle the editor to go into Edit Mode where you can copy, paste, write, and delete the text inside the editor.**
 
 ![Alt text](images/EditMode.png) 
 
