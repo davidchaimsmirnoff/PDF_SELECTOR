@@ -27,9 +27,11 @@
 
 
 <details>
-  <summary><strong> Getting to Know The Project 🔍 </strong></summary>
+  <summary><strong>🔍 Getting to Know the Project </strong></summary>
+  
+**Modern PDF viewers, such as those in Chrome and Brave, have the ability to detect ASCII text from PDFs. They can even roughly recognize the famous Rashi script and convert it into standard Ashuri Script/Standard ASCII by default as shown in the picture below.**
 
-**PDF viewers especially like the ones in Chrome and Brave have an ability to pick up ASCII text from PDF Documents. They can even roughly and pretty accurately here and there pick up even the famous and illustrious **Rashi script** from PDFs as well and by defualt convert it into Ashuri Script/Standard ASCII , as shown in the picture below.**
+
 
 ![Alt text](images/ref1.jpeg)
 
@@ -129,10 +131,13 @@
 
 ![Alt text](images/Presentation.png)
 
-Another important functionality is the tooltip/note that you can save onto selected text and view from selected text upon holding shift and pressing space.
+**Another important functionality is the tooltip/note that you can save onto selected text and view from selected text upon holding shift and pressing space.**
 
 ![Alt text](images/SelectedNotes.png)
 
+**Select the text you want to make a note on hold shift and press space to toggle the note to show up and write some stuff into the box once you want to save the note select the same text or if the text is already selected by the text selector just hold down shift and press space to save the note onto the selected text. The note will automatically close upon holding shift and pressing sapce** 
+
+![Alt text](images/Dragable.png)
 
 
 </details>
