@@ -34,33 +34,33 @@ This is a very useful application because it allows for **quick text modificatio
 </details>
 
 
-<details> 
-<summary>Compatabillity </summary>
+<details>
+  <summary><strong>Compatibility</strong></summary>
 
-BROWSERS THAT PICK UP PDF TEXT STREAMS ON SELECTING TEXT
-CHROME 
-BRAVE
-MICROSOFT EDGE 
+### Browsers That Pick Up PDF Text Streams on Selecting Text:
+- **Chrome**  
+- **Brave**  
+- **Microsoft Edge**  
 
-BROWSERS THAT THE PDF SELECTOR WILL ACCEPT 
-CHROME
-BRAVE 
-MICROSOFT EDGE - TEXT IS REVERSED
+### Browsers That the PDF Selector Will Accept:
+- **Chrome**  
+- **Brave**  
+- **Microsoft Edge** (Text is reversed, though)  
 
-RECOMENDED FOR USE 
-CHROME OR BRAVE
-
-
+### Recommended for Use:
+- **Chrome**  
+- **Brave**  
 </details>
+
 
 
 <details> 
    <summary><strong>Prerequisites and Requirements 🛠️ </strong></summary>
 
-To use this tool, make sure you have the following installed:
+**To use this tool, make sure you have the following installed:**
 
 ✅ **A Browser with PDF Viewing Capabilities** – The program should recognize any browser-based PDF viewer.  
-   **Recommended:** [Google Chrome](https://www.google.com/chrome/) for best compatibility.  
+   **Recommended:** [Google Chrome](https://www.google.com/chrome/) or [Brave Browser](https://brave.com/download/)) for best compatibility.  
 
 ✅ **Node.js** – Required for running the backend.  
    📥 [Download Node.js](https://nodejs.org/)  
@@ -72,12 +72,39 @@ To use this tool, make sure you have the following installed:
 
 </details>
 
-
+<details>
  <summary><strong>User Guide - Instructions & Getting Started 🚀 </strong></summary>
 
 **Tutorial** 
 
-To run the program, clone the repository and start the local server using:
+**To run the program, clone the repository and start the local server using:**
 
-```sh
-node server.js
+`node server.js`
+
+**The output should look something like this.**
+
+![Alt text](images/runServerDot_JS.png)
+
+**Once you have run the command go to your webbrowser (Perferably Chrome or Brave) and write localhost:3000 this should load the editor as in the picture below..**
+
+![Alt text](images/WriteLocalHostonWeb.png) 
+
+**Holding down shift and pressing Enter will toggle the editor in Edit Mode where you can copy, paste, write, and delete the text inside the editor.**
+
+![Alt text](images/EditMode.png) 
+
+
+**Holding shift and pressing enter again will toggle the editor into preview mode where it is easy to view the over all text**
+
+![Alt text](images/SaveMode.png) 
+
+
+
+
+
+
+
+
+
+</details>
+
