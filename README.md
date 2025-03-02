@@ -99,7 +99,7 @@
 
 ![Alt text](images/runServerDot_JS.png)
 
-**Once you have run the command go to your webbrowser (Perferably Chrome or Brave) and write localhost:3000 this should load the editor as in the picture below.**
+**Running this comand should give the exact output universally both on Windows and Mac as the output rendered out from the Terminal/ClientShell the picture above provided that you have NodeJs correctly installed on your computer. Once you have run the command go to your web browser (Perferably Chrome or Brave) and write localhost:3000 in the search bar box on top of your browser press enter & this should load the editor as in the picture below.**
 
 ![Alt text](images/WriteLocalHostonWeb.png) 
 
