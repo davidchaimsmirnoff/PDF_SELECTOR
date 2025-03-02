@@ -82,7 +82,6 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 <details>
  <summary><strong>User Guide - Instructions & Getting Started 🚀 </strong></summary>
 
-**Tutorial** 
 
 **To run the program, clone the repository and start the local server using:**
 
