@@ -42,9 +42,9 @@
 ![Alt text](images/EditMode.png)
 
 
-**Overall this allows for **easy editing** and is great for **rendering old manuscripts into selectable form**. (Meaning, in order to copy or paste the text later if needed into another application, or to send the overall text into any large translation model or large language model like ChatGPT, Claude, or Perplexity AI that supports and can do interlinear translation.)**
+**Overall this allows for easy editing and is great for rendering old manuscripts into selectable form. Once in selectable form this means that after the selection the text can  easily be copied or pasted into any other application, or sent into any large translation model or language model, such as ChatGPT, Claude, or Perplexity AI, that supports interlinear translation.**
 
-**This is a very useful middle man in-between like application because it allows for **quick text modifications** using the program and saves the output into a **persistent file on the system** also upon toggeling save.**
+**This is a very useful middle man in-between like application because it allows for quick text modifications using the program and saves the output into a persistent file on the system upon toggeling save.**
 
 </details>
 
