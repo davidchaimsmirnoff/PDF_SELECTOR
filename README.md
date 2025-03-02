@@ -1,18 +1,28 @@
-Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
+**Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא**
 
-## **PDF SELECTOR**
+## **📜 PDF SELECTOR**
 ![Alt text](images/PDF_EDITOR.png)
 
 
 ![Alt text](images/Selector_Listening.png)
 
-**This project is a PDF text selection tool that takes advantage of browser-based PDF viewers to extract text and later allows for text editing for future processing. Modern web browsers can recognize ASCII text and even roughly pick up specialized scripts like Rashi script in PDFs. This application builds on that capability, allowing users to select text, automatically insert it into an interactive HTML editor, and make quick modifications.**
+<details>
+  <summary>
+      <strong>📖 About This Project</strong>
+  </summary>
 
-**Additionally, the extracted text can be seamlessly transferred into large translation models or large language model such as ChatGPT, Claude, or Perplexity AI for interlinear translation or further processing. This tool is particularly valuable for researchers, students, and professionals working with historical manuscripts or multilingual texts especially in the Hebrew language.**
+**This project is a PDF text selection tool that enhances the browser-based PDF viewing expirience and allows users to also extract, edit, and process text. Popular web browsers like Chrome Brave and Microsoft Edge can recognize ASCII text and even roughly detect specialized scripts like Rashi script in PDFs. This application builds on that capability, allowing users to:**
+
+**Select text from PDFs.
+Automatically insert it into an interactive HTML editor.
+Make quick modifications for further use.
+Additionally, the extracted text can be seamlessly transferred into translation models or Large Language Models (LLMs) such as ChatGPT, Claude, or Perplexity AI for interlinear translation or additional processing.
+This tool is particularly useful for researchers, students, and professionals working with historical manuscripts or multilingual texts, especially in Hebrew.**
 
 <p align="center">
   <img src="images/NotesPreview.png" alt="Notes Preview">
 </p>
+</details>
 
 ![Alt text](images/Middle.png)
 
