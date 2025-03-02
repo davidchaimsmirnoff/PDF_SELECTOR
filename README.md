@@ -90,7 +90,7 @@ Besiata DeShmaya בְּסִיַּעְתָּא דִּשְׁמַיָּא,
 
 ![Alt text](images/runServerDot_JS.png)
 
-**Once you have run the command go to your webbrowser (Perferably Chrome or Brave) and write localhost:3000 this should load the editor as in the picture below..**
+**Once you have run the command go to your webbrowser (Perferably Chrome or Brave) and write localhost:3000 this should load the editor as in the picture below.**
 
 ![Alt text](images/WriteLocalHostonWeb.png) 
 
